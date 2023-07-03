@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 
-function buildVitestArgs(text: string) {
-    return ['vitest', 'run', '-t', text];
+function buildVitestArgs(text: string, filePath: string) {
+    return ['vitest', 'related', filePath, '-t', text, '--run'];
 }
 
 function buildCdArgs(path: string) {
@@ -15,11 +15,15 @@ export function runInTerminal(text: string, filename: string) {
 
     const casePathStr = JSON.stringify(casePath);
     const caseNameStr = JSON.stringify(text);
-
-    const cdArgs = buildCdArgs(casePathStr);
+    const filePath = path.resolve(casePathStr, filename)
+    const paths = filePath.split('\\tests\\')
+    const rootDir = paths[0]
+    const cdArgs = buildCdArgs(rootDir);
     terminal.sendText(cdArgs.join(' '), true);
 
-    const vitestArgs = buildVitestArgs(caseNameStr);
+
+    const correctFilePath = '.\\tests\\' + paths[1]
+    const vitestArgs = buildVitestArgs(caseNameStr, correctFilePath);
     const npxArgs = ['npx', ...vitestArgs];
     terminal.sendText(npxArgs.join(' '), true);
     terminal.show();
@@ -27,12 +31,13 @@ export function runInTerminal(text: string, filename: string) {
 
 function buildDebugConfig(
     cwd: string,
-    text: string
+    text: string,
+    filePath: string
 ): vscode.DebugConfiguration {
     return {
         name: 'Debug vitest case',
         request: 'launch',
-        runtimeArgs: buildVitestArgs(text),
+        runtimeArgs: buildVitestArgs(text, filePath),
         cwd,
         runtimeExecutable: 'npx',
         skipFiles: ['<node_internals>/**'],
@@ -44,6 +49,12 @@ function buildDebugConfig(
 
 export function debugInTermial(text: string, filename: string) {
     const casePath = path.dirname(filename);
-    const config = buildDebugConfig(casePath, text);
+
+    const casePathStr = JSON.stringify(casePath);
+    const filePath = path.resolve(casePathStr, filename)
+    const paths = filePath.split('\\tests\\')
+    const rootDir = paths[0]
+    const correctFilePath = '.\\tests\\' + paths[1]
+    const config = buildDebugConfig(rootDir, text, correctFilePath);
     vscode.debug.startDebugging(undefined, config);
 }

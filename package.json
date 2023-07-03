@@ -1,11 +1,11 @@
 {
-  "name": "vscode-vitest-runner",
-  "displayName": "Vitest Runner",
-  "version": "0.0.4",
+  "name": "vscode-vitest-runner-leetchi",
+  "displayName": "Vitest Runner #Leetchi",
+  "version": "0.0.6",
   "main": "dist/index.js",
   "icon": "logo.png",
   "license": "MIT",
-  "description": "Vitest case runner.",
+  "description": "Vitest case runner. Leetchi",
   "publisher": "kingwl",
   "engines": {
     "vscode": "^1.65.0"
@@ -19,7 +19,7 @@
     "runner",
     "codelens"
   ],
-  "repository": "git@github.com:kwai-explore/vscode-vitest-runner.git",
+  "repository": "git@github.com:bosquig/vscode-vitest-runner.git",
   "author": "kingwl <kingwenlu@gmail.com>",
   "activationEvents": [
     "onLanguage:typescript",
@@ -40,5 +40,8 @@
     "package": "yarn build && yarn vsce package",
     "format:check": "prettier --config ./prettier.config.json --c ./src/**/*.ts",
     "format:write": "yarn format:check --write"
+  },
+  "dependencies": {
+    "path": "^0.12.7"
   }
 }
