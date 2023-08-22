@@ -2,7 +2,7 @@ import type * as ts from 'typescript';
 import * as vscode from 'vscode';
 import { TextCase } from './types';
 import { flatMap } from './utils';
-import { RunVitestCommand, DebugVitestCommand } from './vscode';
+import { RunVitestCommand, DebugVitestCommand, WatchVitestCommand } from './vscode';
 
 const caseText = new Set(['it', 'describe','test']);
 
@@ -63,6 +63,10 @@ export class CodeLensProvider implements vscode.CodeLensProvider {
             const end = document.positionAt(x.end);
 
             return [
+                new vscode.CodeLens(
+                    new vscode.Range(start, end),
+                    new WatchVitestCommand(x.text, document.fileName)
+                ),
                 new vscode.CodeLens(
                     new vscode.Range(start, end),
                     new RunVitestCommand(x.text, document.fileName)
